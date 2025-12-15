@@ -187,6 +187,33 @@ class SH4WorldMeshImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportH
                 f"Failed to calculate normals for {mesh_object.name}: {e}"
             )
 
+    def _configure_principled_defaults(self, principled_node):
+        """Set conservative, matte defaults for Principled BSDF nodes. SH4 supported phong, but not complex PBR workflows, so this helps make it look more like it would in the engine."""
+        if principled_node is None:
+            return
+
+        try:
+            inputs = principled_node.inputs
+
+            if "Roughness" in inputs:
+                inputs["Roughness"].default_value = 1.0
+
+            if "Specular IOR Level" in inputs:
+                inputs["Specular IOR Level"].default_value = 0.0
+            if "Specular" in inputs:
+                inputs["Specular"].default_value = 0.0
+
+            if "Metallic" in inputs:
+                inputs["Metallic"].default_value = 0.0
+            if "Clearcoat" in inputs:
+                inputs["Clearcoat"].default_value = 0.0
+            if "Sheen Weight" in inputs:
+                inputs["Sheen Weight"].default_value = 0.0
+            if "Sheen" in inputs:
+                inputs["Sheen"].default_value = 0.0
+        except Exception:
+            pass
+
     def _reset_import_state(self):
         self._import_warnings = []
         self._import_errors = []
@@ -973,6 +1000,8 @@ class SH4WorldMeshImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportH
         )
         principled_bsdf_node.location = 0, 0
 
+        self._configure_principled_defaults(principled_bsdf_node)
+
         texture_node = material.node_tree.nodes.new(type="ShaderNodeTexImage")
         texture_node.location = -200, 0
 
@@ -1554,6 +1583,8 @@ class SH4WorldMeshImportOperator(bpy.types.Operator, bpy_extras.io_utils.ImportH
                 )
                 principled_bsdf_node.location = 0, 0
                 principled_bsdf_node.label = "Principled BSDF"
+
+                self._configure_principled_defaults(principled_bsdf_node)
                 texture_node = material.node_tree.nodes.new(type="ShaderNodeTexImage")
                 texture_node.location = -200, 0
                 texture_node.label = "Texture Image"
