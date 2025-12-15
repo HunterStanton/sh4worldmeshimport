@@ -18,8 +18,6 @@ Once installed, select a .bin file in <SH4 Install Directory>/Data and you shoul
 
 - World meshes do not include animated objects, such as the fan in Henry's apartment or the death machine in the final boss fight. These are separate meshes and where they should be placed is hardcoded in the exe, they're not present in the world mesh itself, so there is no way to support automatic import and placement of these
 
-- Certain test stages (iwa_teststage.bin for example) have world meshes in a format not used by the final game itself, so these can not be imported *yet*
-
 - Some shadow maps will not blend/display correctly and will just appear black. Hiding the overdraw group in Blender will disable most shadow maps if you're looking to hide the shadows
 
 - Data is imported *exactly* how it is laid out in the data files themselves, therefore you might see oddities that only show up in Blender that wouldn't appear in-game
